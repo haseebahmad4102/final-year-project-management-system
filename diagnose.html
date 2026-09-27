@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>API Diagnostic Tool</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        .success { color: green; }
+        .error { color: red; }
+        pre { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; overflow: auto; }
+        button { padding: 10px 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>API Diagnostic Tool</h1>
+    <p>This tool verifies connectivity to <code>api.php</code>.</p>
+    
+    <button onclick="runDiagnostics()">Run Diagnostics</button>
+    
+    <div id="results">
+        <h3>Results:</h3>
+        <div id="status">Click the button to start...</div>
+    </div>
+
+    <script>
+        async function runDiagnostics() {
+            const status = document.getElementById('status');
+            status.innerHTML = "Testing connection to api.php...";
+            
+            try {
+                // Test 1: Basic GET request
+                const res1 = await fetch('api.php?action=test');
+                const text1 = await res1.text();
+                
+                let html = `<h4>Test 1: GET api.php?action=test</h4>`;
+                html += `<p>Status: ${res1.status} ${res1.statusText}</p>`;
+                html += `<p>Content-Type: ${res1.headers.get('Content-Type')}</p>`;
+                html += `<pre>${text1}</pre>`;
+                
+                // Test 2: OPTIONS request (Preflight)
+                const res2 = await fetch('api.php', { method: 'OPTIONS' });
+                html += `<h4>Test 2: OPTIONS api.php (CORS Preflight)</h4>`;
+                html += `<p>Status: ${res2.status} ${res2.statusText}</p>`;
+                
+                // Test 3: POST request (JSON)
+                const res3 = await fetch('api.php?action=users/test', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ test: true })
+                });
+                const text3 = await res3.text();
+                html += `<h4>Test 3: POST api.php?action=users/test</h4>`;
+                html += `<p>Status: ${res3.status} ${res3.statusText}</p>`;
+                html += `<pre>${text3}</pre>`;
+                
+                status.innerHTML = html;
+            } catch (e) {
+                status.innerHTML = `<div class="error"><h4>Diagnostic Failed</h4><p>${e.message}</p></div>`;
+            }
+        }
+    </script>
+</body>
+</html>

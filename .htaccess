@@ -1,0 +1,19 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ api.php/$1 [L]
+
+# Block direct web access to sensitive files (logs, DB dumps, docs, dotfiles).
+<FilesMatch "\.(log|sql|docx|md|sqlite|env|ini|bak)$">
+    Require all denied
+</FilesMatch>
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Large file upload limits (200MB)
+php_value upload_max_filesize 200M
+php_value post_max_size 210M
+php_value memory_limit 512M
+php_value max_execution_time 300
+php_value max_input_time 300

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Year Project (FYP) Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ===========================
+     LANDING PAGE
+=========================== -->
+<div id="landing">
+  <div class="landing-logo">🎓</div>
+  <div class="college-name">DEPARTMENT OF COMPUTER SCIENCE & INFORMATION TECHNOLOGY</div>
+  <h1 class="landing-title">Final Year Project<br>Management System</h1>
+  <p class="landing-sub">A centralized platform for students, supervisors, and administrators to manage final year projects efficiently — from proposal submission to final evaluation.</p>
+
+  <div class="role-cards">
+    <div class="role-card" onclick="openAuth('student')">
+      <span class="role-emoji">👨‍🎓</span>
+      <div class="role-title">Student</div>
+      <div class="role-desc">Submit proposals, track progress, upload reports & communicate with your supervisor.</div>
+    </div>
+    <div class="role-card" onclick="openAuth('supervisor')">
+      <span class="role-emoji">👨‍🏫</span>
+      <div class="role-title">Supervisor</div>
+      <div class="role-desc">Review proposals, provide feedback, monitor progress & evaluate student projects.</div>
+    </div>
+    <div class="role-card" onclick="openAuth('admin')">
+      <span class="role-emoji">⚙️</span>
+      <div class="role-title">Administrator</div>
+      <div class="role-desc">Manage users, assign supervisors, oversee all projects & maintain system records.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===========================
+     AUTH MODAL
+=========================== -->
+<div class="modal-overlay hidden" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+    <div class="modal-title" id="authTitle">Login</div>
+    <div class="modal-sub" id="authSub">Enter your credentials to continue</div>
+
+    <div id="alertBox"></div>
+
+    <!-- LOGIN FORM -->
+    <form id="loginForm" onsubmit="doLogin(); return false;" autocomplete="on">
+      <div id="demoCreds" class="demo-creds"></div>
+      <div class="form-group mb-4">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="loginEmail" name="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="form-group mb-4">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="loginPassword" name="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary w-full" style="justify-content:center">
+        🔐 Sign In
+      </button>
+      <div class="text-sm text-muted mt-3" style="text-align:center">
+        Don't have an account?
+        <span style="color:var(--accent);cursor:pointer;font-weight:600" onclick="toggleRegister()">Register here</span>
+      </div>
+    </form>
+
+    <!-- REGISTER FORM -->
+    <form id="registerForm" class="hidden" onsubmit="doRegister(); return false;" autocomplete="on">
+      <div class="form-grid mb-4">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" type="text" id="regName" name="name" placeholder="John Doe" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Roll Number</label>
+          <input class="form-input" type="text" id="regRoll" name="rollNo" placeholder="2024-CS-001" autocomplete="off">
+        </div>
+      </div>
+      <div class="form-group mb-4">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="regEmail" name="email" placeholder="student@example.com" autocomplete="email">
+      </div>
+      <div class="form-group mb-4">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="regPassword" name="password" placeholder="Min. 6 characters" autocomplete="new-password">
+      </div>
+      <button type="submit" class="btn btn-success w-full" style="justify-content:center">
+        ✅ Create Account
+      </button>
+      <div class="text-sm text-muted mt-3" style="text-align:center">
+        Already registered?
+        <span style="color:var(--accent);cursor:pointer;font-weight:600" onclick="toggleRegister()">Login here</span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===========================
+     APP SHELL
+========================== -->
+<div id="app">
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">🎓</div>
+      <div>
+        <div class="sidebar-brand">FYP Management</div>
+        <div class="sidebar-brand-sub">Project Portal</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav"></nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" id="avatarInitial">U</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebarName">User</div>
+          <div class="user-role" id="sidebarRole">Role</div>
+        </div>
+        <button class="logout-btn" onclick="logout()" title="Logout">🚪</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="flex items-center gap-3">
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+        <h1 class="page-title" id="pageTitle">Dashboard</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()" title="Notifications">
+          🔔
+          <span class="notif-count hidden" id="notifCount">0</span>
+        </button>
+        <span class="badge badge-blue" id="roleBadge">Student</span>
+      </div>
+    </div>
+    <div class="page-content" id="pageContent">
+      <!-- Dynamic content rendered here -->
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

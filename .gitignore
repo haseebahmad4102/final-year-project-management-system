@@ -1,0 +1,28 @@
+# Server logs / debug output
+api_debug.log
+*.log
+
+# User-uploaded files (recreated by the app at runtime)
+uploads/**
+!uploads/**/
+!uploads/**/.gitkeep
+
+
+# Environment and sensitive config
+.env
+.env.*
+*.local
+
+# OS / editor cruft
+Thumbs.db
+.DS_Store
+*.swp
+*.bak
+*.tmp
+.vscode/
+.idea/
+
+# Tooling / local config (not part of the project)
+.claude/
+.agents/
+
